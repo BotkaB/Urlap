@@ -1,4 +1,4 @@
-import UrlapView from "../Wiew/UrlapView.js"
+import UrlapView from "../View/UrlapView.js"
 
 
 
