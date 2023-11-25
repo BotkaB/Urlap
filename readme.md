@@ -1,0 +1,1 @@
+Elkészítve az alapstruktúra
