@@ -1,8 +1,10 @@
 import { adatLeiras } from "./Adat.js";
 import TextUrlapView from "./TextUrlapView.js";
+import NumberUrlapView from "./NumberUrlapView.js";
+
 
 export default class UrlapView {
-
+  #urlapValid = false;
   #formAdat = {}
   #inputElemObjektumokLista = [] // itt tároljuk azokat az objerktumokat, amelyek létrehozzák a form elemeket
   constructor(szuloelem) {
@@ -24,25 +26,25 @@ export default class UrlapView {
     this.szulEvElem = this.formElem.find("#szul_ev");*/
     this.submitElem.on("click", (event) => {
       event.preventDefault();
+      this.#urlapValid = true;
+      this.#inputElemObjektumokLista.forEach((elem) => {
+        this.#formAdat[elem.key] = elem.getValue()
+        this.#urlapValid=this.#urlapValid && elem.getValid()
+        //console.log(elem)
+        //console.log(elem.key)
+        //this.trigger("ujAdatHozzaadasa")
+      })
 
-      this.#inputElemObjektumokLista.forEach(
-
-       
-        (elem) => {
-          this.#formAdat[elem.key]=elem.getValue()
-          //console.log(elem)
-          //console.log(elem.key)
-         this.trigger("ujAdatHozzaadasa")
-        }
-
-        
-     )
-
-     console.log(this.#formAdat);
-     // this.#formAdat.nev = this.nevElem.val();
-     // this.#formAdat.szul = this.szulEvElem.val();
+      //console.log(this.#formAdat);
+      // this.#formAdat.nev = this.nevElem.val();
+      // this.#formAdat.szul = this.szulEvElem.val();
       console.log(this.#formAdat);
+      if (this.#urlapValid){
       this.trigger("ujAdatHozzaAdasa");
+
+      }else{
+        console.log("Nem valid az űrlap.")
+      }
     })
   }
 
@@ -52,19 +54,19 @@ export default class UrlapView {
   }
 
 
-
-  numberUrlapElem(obj, key) {
-    let txt = `<div class="mb-3 mt-3">
-      <label for="${key}" class="form-label">${obj.megjelenes}</label>
-      <input type="${obj.tipus}" class="form-control" id="${key}" 
-      placeholder="${obj.placeholder}" min="${obj.pattern.min}"  max="${obj.pattern.max}"
-      value="${obj.value}" name="${key}">
-      </div>`
-
-    return txt
-
-  }
-
+  /*
+    numberUrlapElem(obj, key) {
+      let txt = `<div class="mb-3 mt-3">
+        <label for="${key}" class="form-label">${obj.megjelenes}</label>
+        <input type="${obj.tipus}" class="form-control" id="${key}" 
+        placeholder="${obj.placeholder}" min="${obj.pattern.min}"  max="${obj.pattern.max}"
+        value="${obj.value}" name="${key}">
+        </div>`
+  
+      return txt
+  
+    }
+  */
   htmlOsszeallit() {
     let txt = "";
 
@@ -74,7 +76,7 @@ export default class UrlapView {
           this.#inputElemObjektumokLista.push(new TextUrlapView(this.formElem, adatLeiras[key], key))
           break;
         case "number":
-          txt += this.numberUrlapElem(adatLeiras[key], key)
+          this.#inputElemObjektumokLista.push(new NumberUrlapView(this.formElem, adatLeiras[key], key))
           break;
 
         default:
